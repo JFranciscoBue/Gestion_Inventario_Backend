@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -26,6 +25,7 @@ export class Product {
   @Column({
     nullable: false,
     length: 40,
+    default: 'Un producto nuevo',
   })
   description: string;
 
