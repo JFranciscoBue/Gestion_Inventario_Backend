@@ -6,19 +6,20 @@ envConfig({
   path: '.env',
 });
 
-const dbConfig = {
+const config = {
   type: 'postgres',
-  database: process.env.DB_DATABASE,
   host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
   port: process.env.DB_PORT as unknown as number,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  entities: ['/dist/**/*.entity.{.ts,.js}'],
+  logging: true,
+  entities: ['dist/**/*.entity.{.ts,.js}'],
   autoLoadEntities: true,
-  logging: false,
+  migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
-  dropSchema: false,
+  // dropSchema: true,
 };
-export default registerAs('typeorm', () => dbConfig);
+export default registerAs('typeorm', () => config);
 
-export const connection = new DataSource(dbConfig as DataSourceOptions);
+export const connection = new DataSource(config as DataSourceOptions);
