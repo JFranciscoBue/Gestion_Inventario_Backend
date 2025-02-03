@@ -58,4 +58,11 @@ export class Employee {
     unique: true,
   })
   marketAdress: string;
+
+  @Column({
+    type: 'integer',
+    nullable: false,
+    unique: true,
+  })
+  debitCardNumber: number;
 }
