@@ -7,6 +7,11 @@ import { ProvidersModule } from './providers/providers.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { config as envConfig } from 'dotenv';
+import { JwtModule } from '@nestjs/jwt';
+
+envConfig({ path: '.env' });
 
 @Module({
   imports: [
@@ -18,11 +23,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => config.get('typeorm'),
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
+    }),
     CadetsModule,
     EmployeesModule,
     OrdersModule,
     ProductsModule,
     ProvidersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

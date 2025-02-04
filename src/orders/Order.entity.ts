@@ -1,4 +1,5 @@
 import { Cadet } from 'src/cadets/Cadet.entity';
+import { Employee } from 'src/employees/Employee.entity';
 import { Product } from 'src/products/Product.entity';
 import { Provider } from 'src/providers/Provider.entity';
 import {
@@ -37,4 +38,8 @@ export class Order {
   })
   @JoinTable({ name: 'orders_products' })
   products: Product[];
+
+  @ManyToOne(() => Employee, (employee) => employee.orders)
+  @JoinColumn({ name: 'employee_Id' })
+  employee: Employee;
 }

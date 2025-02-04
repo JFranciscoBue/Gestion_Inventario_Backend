@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from 'src/orders/Order.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
   name: 'employees',
@@ -25,9 +26,8 @@ export class Employee {
 
   @Column({
     nullable: false,
-    type: 'integer',
   })
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column({
     nullable: false,
@@ -60,9 +60,11 @@ export class Employee {
   marketAdress: string;
 
   @Column({
-    type: 'integer',
     nullable: false,
     unique: true,
   })
-  debitCardNumber: number;
+  debitCardNumber: string;
+
+  @OneToMany(() => Order, (orders) => orders.employee)
+  orders: Order[];
 }
