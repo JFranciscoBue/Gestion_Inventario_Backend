@@ -1,3 +1,4 @@
+import { Role } from 'src/enum/Role.enum';
 import { Order } from 'src/orders/Order.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -64,6 +65,12 @@ export class Employee {
     unique: true,
   })
   debitCardNumber: string;
+
+  @Column({
+    enum: Role,
+    nullable: false,
+  })
+  role: string;
 
   @OneToMany(() => Order, (orders) => orders.employee)
   orders: Order[];
