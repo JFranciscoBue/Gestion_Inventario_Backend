@@ -1,3 +1,4 @@
+import { Employee } from 'src/employees/Employee.entity';
 import { Order } from 'src/orders/Order.entity';
 import { Provider } from 'src/providers/Provider.entity';
 import {
@@ -46,9 +47,8 @@ export class Product {
   })
   price: number;
 
-  @ManyToOne(() => Provider, (provider) => provider.products)
-  @JoinColumn({ name: 'provider_id' })
-  provider: Provider;
+  @ManyToOne(() => Employee, (employee) => employee.products)
+  employee: Employee;
 
   @ManyToMany(() => Order, (orders) => orders.products)
   orders: Order[];

@@ -50,9 +50,6 @@ export class Provider {
   })
   key: string;
 
-  @OneToMany(() => Product, (products) => products.provider)
-  products: Product[];
-
   @OneToMany(() => Order, (orders) => orders.provider)
   orders: Order[];
 }

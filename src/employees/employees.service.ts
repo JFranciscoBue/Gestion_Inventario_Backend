@@ -18,6 +18,14 @@ export class EmployeesService {
     private readonly employees: Repository<Employee>,
   ) {}
 
+  async employeeById(id: number) {
+    try {
+      return await this.employees.findOneOrFail({ where: { id } });
+    } catch (error) {
+      throw new NotFoundException('The employee Not Exist');
+    }
+  }
+
   async newEmployee(data: NewEmployeeDto): Promise<Object> {
     console.log(data);
 

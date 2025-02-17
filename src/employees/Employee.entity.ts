@@ -1,5 +1,6 @@
 import { Role } from 'src/enum/Role.enum';
 import { Order } from 'src/orders/Order.entity';
+import { Product } from 'src/products/Product.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
@@ -74,4 +75,7 @@ export class Employee {
 
   @OneToMany(() => Order, (orders) => orders.employee)
   orders: Order[];
+
+  @OneToMany(() => Product, (product) => product.employee)
+  products: Product[];
 }

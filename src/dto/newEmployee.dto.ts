@@ -5,7 +5,9 @@ import {
   IsNotEmpty,
   MinLength,
   IsDateString,
+  IsEnum,
 } from 'class-validator';
+import { Role } from 'src/enum/Role.enum';
 
 export class NewEmployeeDto {
   @IsEmail()
@@ -47,4 +49,9 @@ export class NewEmployeeDto {
   @IsString()
   @IsNotEmpty()
   debitCardNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEnum(Role)
+  role: Role;
 }
