@@ -49,7 +49,4 @@ export class Provider {
     nullable: false,
   })
   key: string;
-
-  @OneToMany(() => Order, (orders) => orders.provider)
-  orders: Order[];
 }

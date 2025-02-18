@@ -1,7 +1,7 @@
 import { Cadet } from 'src/cadets/Cadet.entity';
 import { Employee } from 'src/employees/Employee.entity';
+import { Status } from 'src/enum/Status.enum';
 import { Product } from 'src/products/Product.entity';
-import { Provider } from 'src/providers/Provider.entity';
 import {
   Column,
   Entity,
@@ -24,13 +24,17 @@ export class Order {
   })
   deliveryAdress: string;
 
+  @Column({
+    type: 'enum',
+    enum: Status,
+    nullable: false,
+    default: Status.PENDING,
+  })
+  status: string;
+
   @ManyToOne(() => Cadet, (cadet) => cadet.orders)
   @JoinColumn({ name: 'cadet_Id' })
   cadet: Cadet;
-
-  @ManyToOne(() => Provider, (provider) => provider.orders)
-  @JoinColumn({ name: 'provider_Id' })
-  provider: Provider;
 
   @ManyToMany(() => Product, (products) => products.orders, {
     cascade: true,
