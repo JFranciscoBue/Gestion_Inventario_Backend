@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cadet } from './Cadet.entity';
 import { EntityNotFoundError, QueryFailedError, Repository } from 'typeorm';
+import { NewCadetDto } from 'src/dto/newCadet.dto';
 
 @Injectable()
 export class CadetsService {
@@ -14,7 +15,11 @@ export class CadetsService {
     @InjectRepository(Cadet) private readonly cadet: Repository<Cadet>,
   ) {}
 
-  async addCadet(data) {
+  async allCadets() {
+    return await this.cadet.find();
+  }
+
+  async addCadet(data: NewCadetDto) {
     const newCadet = this.cadet.create(data);
     await this.cadet.save(newCadet);
 
@@ -47,6 +52,28 @@ export class CadetsService {
       throw new InternalServerErrorException(
         `Unexpected error: ${error.message}`,
       );
+    }
+  }
+
+  async cadetOrders(id: number) {
+    try {
+      const cadetFound = await this.cadet.findOneOrFail({
+        where: { id },
+        relations: { orders: true },
+      });
+
+      const orders = cadetFound.orders;
+      console.log(orders);
+
+      if (orders.length === 0) {
+        return 'This Cadet Not have Orders Pending Yet. Assign One';
+      }
+
+      return {
+        orders,
+      };
+    } catch (error) {
+      throw new NotFoundException('The Cadet Not Exist');
     }
   }
 }

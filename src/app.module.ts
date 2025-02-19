@@ -3,7 +3,6 @@ import { CadetsModule } from './cadets/cadets.module';
 import { EmployeesModule } from './employees/employees.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
-import { ProvidersModule } from './providers/providers.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -32,7 +31,6 @@ envConfig({ path: '.env' });
     EmployeesModule,
     OrdersModule,
     ProductsModule,
-    ProvidersModule,
     AuthModule,
   ],
   controllers: [],

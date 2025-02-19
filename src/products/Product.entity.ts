@@ -1,6 +1,5 @@
 import { Employee } from 'src/employees/Employee.entity';
 import { Order } from 'src/orders/Order.entity';
-import { Provider } from 'src/providers/Provider.entity';
 import {
   Column,
   Entity,
