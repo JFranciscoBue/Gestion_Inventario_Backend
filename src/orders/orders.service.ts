@@ -22,6 +22,44 @@ export class OrdersService {
     @InjectRepository(Product) private readonly product: Repository<Product>,
   ) {}
 
+  async allOrders() {
+    return await this.order.find();
+  }
+
+  async orderById(id: number) {
+    try {
+      return await this.order.findOneOrFail({ where: { id } });
+    } catch (error) {
+      throw new NotFoundException('The Order Not Exist');
+    }
+  }
+
+  async employeeOrders(id: number) {
+    try {
+      const employeeFound = await this.employee.findOneOrFail({
+        where: { id },
+        relations: { orders: { products: true } },
+      });
+      const employeeOrders = employeeFound.orders;
+
+      if (employeeOrders.length === 0) {
+        return 'You not have Orders Yet.';
+      }
+
+      const orderProducts = employeeOrders
+        .map((element) => element.products)
+        .map((element) => element.map((prod) => prod))
+        .map((qsy) => qsy);
+
+      return {
+        employeeOrders,
+        products: orderProducts.flat(),
+      };
+    } catch (error) {
+      throw new NotFoundException('The employee Not Exist');
+    }
+  }
+
   async newOrder(data: CreateOrderDto) {
     try {
       console.log(data);

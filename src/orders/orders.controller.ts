@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
@@ -9,10 +10,28 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from 'src/dto/newOrder.dto';
 import { ValidParamsOrderStatusChange } from 'src/interceptors/validationParamsOrderStatus.interceptor';
+import { ValidParamRequest } from 'src/interceptors/validationParam.interceptor';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
+
+  @Get('/all')
+  async allOrders() {
+    return await this.ordersService.allOrders();
+  }
+
+  @Get(':id')
+  @UseInterceptors(ValidParamRequest)
+  async orderById(@Param('id') id: string) {
+    return await this.ordersService.orderById(Number(id));
+  }
+
+  @Get('/employee_orders/:id')
+  @UseInterceptors(ValidParamRequest)
+  async employeeOrders(@Param('id') id: string) {
+    return await this.ordersService.employeeOrders(Number(id));
+  }
 
   @Post('/new')
   async newOrder(@Body() data: CreateOrderDto) {

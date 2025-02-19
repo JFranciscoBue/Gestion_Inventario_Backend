@@ -26,7 +26,7 @@ export class Cadet {
 
   @Column({
     default: 0,
-    type: 'decimal',
+    type: 'double precision',
   })
   money: number;
 
