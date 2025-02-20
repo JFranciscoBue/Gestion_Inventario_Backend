@@ -73,6 +73,12 @@ export class Employee {
   })
   role: string;
 
+  @Column({
+    default: 0,
+    type: 'double precision',
+  })
+  money: number;
+
   @OneToMany(() => Order, (orders) => orders.employee)
   orders: Order[];
 

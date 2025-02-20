@@ -27,12 +27,6 @@ export class OrdersController {
     return await this.ordersService.orderById(Number(id));
   }
 
-  @Get('/employee_orders/:id')
-  @UseInterceptors(ValidParamRequest)
-  async employeeOrders(@Param('id') id: string) {
-    return await this.ordersService.employeeOrders(Number(id));
-  }
-
   @Post('/new')
   async newOrder(@Body() data: CreateOrderDto) {
     return await this.ordersService.newOrder(data);

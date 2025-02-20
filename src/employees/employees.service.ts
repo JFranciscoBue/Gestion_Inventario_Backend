@@ -1,15 +1,18 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NewEmployeeDto } from 'src/dto/newEmployee.dto';
 import { Employee } from './Employee.entity';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError, Repository } from 'typeorm';
 import { validate } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import { Role } from 'src/enum/Role.enum';
 
 @Injectable()
 export class EmployeesService {
@@ -17,6 +20,10 @@ export class EmployeesService {
     @InjectRepository(Employee)
     private readonly employees: Repository<Employee>,
   ) {}
+
+  async allEmployees() {
+    return await this.employees.find();
+  }
 
   async employeeById(id: number) {
     try {
@@ -77,25 +84,75 @@ export class EmployeesService {
   }
 
   async employeeOrders(id: number): Promise<Object | string> {
-    const employeeFound = await this.employees.findOne({
-      where: { id },
-      relations: {
-        orders: true,
-      },
-    });
+    try {
+      const employeeFound = await this.employees.findOneOrFail({
+        where: { id },
+        relations: { orders: { products: true } },
+      });
+      const employeeOrders = employeeFound.orders;
 
-    if (!employeeFound) {
-      throw new NotFoundException('The employee not exist');
+      if (employeeOrders.length === 0) {
+        return 'You not have Orders Yet.';
+      }
+
+      const orderProducts = employeeOrders
+        .map((element) => element.products)
+        .map((element) => element.map((prod) => prod))
+        .map((qsy) => qsy);
+
+      return {
+        employeeOrders,
+        products: orderProducts.flat(),
+      };
+    } catch (error) {
+      throw new NotFoundException('The employee Not Exist');
     }
+  }
 
-    const orders = employeeFound.orders;
+  async getAllProviders(): Promise<Employee[]> {
+    try {
+      const providers = await this.employees.find({
+        where: { role: Role.PROVIDER },
+      });
 
-    if (orders.length === 0) {
-      return 'You not have any order yet';
+      return providers;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    return {
-      orders,
-    };
+  async payEmployeeSalary(id: number, salary: number): Promise<Object> {
+    try {
+      const employeeFound = await this.employees.findOneOrFail({
+        where: { id },
+      });
+
+      const newMoney = (employeeFound.money += salary);
+
+      const affectedRows = (
+        await this.employees.update(id, { money: newMoney })
+      ).affected;
+
+      if (affectedRows === 1) {
+        const { password, ...withOutPassword } = employeeFound;
+
+        return {
+          sucess: true,
+          withOutPassword,
+        };
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`Employee with ID ${id} not found.`);
+      }
+      if (error instanceof QueryFailedError) {
+        throw new ConflictException('Database query failed. Check data types.');
+      }
+      throw new InternalServerErrorException(
+        `Unexpected error: ${error.message}`,
+      );
+    }
   }
 }
