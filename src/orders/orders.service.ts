@@ -101,4 +101,24 @@ export class OrdersService {
       throw new ConflictException(`Cannot Set the New Status. Try Again`);
     }
   }
+
+  async deleteOrder(id: number): Promise<Object> {
+    try {
+      const orderFound = await this.order.findOneOrFail({ where: { id } });
+
+      if (orderFound.status !== Status.DELIVERED) {
+        throw new BadRequestException(
+          'Cannot delete the order. Status must be DELIVERED',
+        );
+      }
+
+      await this.order.delete(id);
+
+      return {
+        orderFound,
+      };
+    } catch (error) {
+      throw new NotFoundException('The Order Not Exist');
+    }
+  }
 }

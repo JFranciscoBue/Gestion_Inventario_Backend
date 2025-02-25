@@ -1,16 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { CadetsService } from './cadets.service';
 import { PayloadDataDto } from 'src/dto/payloadData.dto';
 import { ValidSalary } from 'src/interceptors/validationSalary.interceptor';
 import { NewCadetDto } from 'src/dto/newCadet.dto';
+import { Cadet } from './Cadet.entity';
 
 @Controller('cadets')
 export class CadetsController {
@@ -38,5 +41,15 @@ export class CadetsController {
       payloadData.id,
       payloadData.salary,
     );
+  }
+
+  @Put('/update/:id')
+  async updateCadet(@Param('id') id: string, @Body() data: Partial<Cadet>) {
+    return await this.cadetsService.updateCadet(Number(id), data);
+  }
+
+  @Delete('/:id')
+  async deleteCadet(@Param('id') id: string) {
+    return await this.cadetsService.deleteCadet(Number(id));
   }
 }

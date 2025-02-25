@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -39,5 +40,11 @@ export class OrdersController {
     @Param('status') status: string,
   ) {
     return await this.ordersService.setNewStatus(Number(id), status);
+  }
+
+  @Delete('/:id')
+  @UseInterceptors(ValidParamRequest)
+  async deleteOrder(@Param('id') id: string) {
+    return await this.ordersService.deleteOrder(Number(id));
   }
 }

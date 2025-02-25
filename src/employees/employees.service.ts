@@ -155,4 +155,30 @@ export class EmployeesService {
       );
     }
   }
+
+  async updateEmployee(id: number, data: Partial<Employee>): Promise<Employee> {
+    const affectedRows = (await this.employees.update(id, data)).affected;
+
+    if (affectedRows === 0) {
+      throw new ConflictException('Cannot Update the Info of this Employee');
+    }
+
+    const updatedEmployee = await this.employeeById(id);
+
+    return updatedEmployee;
+  }
+
+  async deleteEmployee(id: number): Promise<Employee> {
+    try {
+      const employeeFound = await this.employees.findOneOrFail({
+        where: { id },
+      });
+
+      await this.employees.delete(id);
+
+      return employeeFound;
+    } catch (error) {
+      throw new NotFoundException('The Employee Not Exist');
+    }
+  }
 }

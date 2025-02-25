@@ -76,4 +76,25 @@ export class CadetsService {
       throw new NotFoundException('The Cadet Not Exist');
     }
   }
+
+  async updateCadet(id: number, data: Partial<Cadet>): Promise<Cadet> {
+    await this.cadet.update(id, data);
+
+    const updatedCadet = await this.cadet.findOne({ where: { id } });
+
+    return updatedCadet;
+  }
+
+  async deleteCadet(id: number): Promise<Object> {
+    const affectedRows = (await this.cadet.delete(id)).affected;
+
+    if (affectedRows === 0) {
+      throw new ConflictException('Cannot Delete this Cadet');
+    }
+
+    return {
+      success: true,
+      message: 'Cadet Deleted Successfully',
+    };
+  }
 }

@@ -79,6 +79,12 @@ export class Employee {
   })
   money: number;
 
+  @Column({
+    type: 'jsonb',
+    default: [],
+  })
+  cart: Product[];
+
   @OneToMany(() => Order, (orders) => orders.employee)
   orders: Order[];
 
